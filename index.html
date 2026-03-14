@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦞 龙虾 AI 工厂助手 — 港泰日用塑料制品厂</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --card-hover: #22263a;
+    --accent: #00b894;
+    --accent2: #00cec9;
+    --text: #e4e6eb;
+    --text2: #8b8fa3;
+    --border: #2d3142;
+    --green: #00b894;
+    --red: #ff6b6b;
+    --orange: #fdcb6e;
+    --blue: #74b9ff;
+    --purple: #6c5ce7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    scroll-behavior: smooth;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  .hero {
+    text-align: center;
+    padding: 80px 0 60px;
+    background: linear-gradient(135deg, #1a1d27 0%, #0d3b2e 40%, #1b2838 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-emoji { font-size: 72px; margin-bottom: 16px; }
+  .hero h1 { font-size: 34px; font-weight: 700; margin-bottom: 12px; }
+  .hero h1 span { color: var(--accent); }
+  .hero .subtitle { font-size: 18px; color: var(--text2); margin-bottom: 32px; }
+  .hero .stats {
+    display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+  }
+  .hero .stat { text-align: center; }
+  .hero .stat-num { font-size: 32px; font-weight: 700; color: var(--accent2); }
+  .hero .stat-label { font-size: 13px; color: var(--text2); }
+
+  .quick-start {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin: -30px auto 0;
+    max-width: 750px;
+    position: relative;
+    z-index: 1;
+  }
+  .quick-start h3 { color: var(--accent2); margin-bottom: 12px; font-size: 16px; }
+  .quick-start .cmd-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .quick-start .cmd-row:last-child { border-bottom: none; }
+  .quick-start .cmd {
+    background: #0d0f15;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 14px;
+    color: var(--accent2);
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .quick-start .cmd:hover { background: var(--accent); color: #fff; }
+  .quick-start .cmd-desc { color: var(--text2); font-size: 14px; }
+
+  section { padding: 60px 0; }
+  section h2 {
+    font-size: 28px; font-weight: 700; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  section .section-sub { color: var(--text2); margin-bottom: 32px; font-size: 15px; }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .feature-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    transition: all .3s;
+    cursor: pointer;
+  }
+  .feature-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .feature-card .fc-icon { font-size: 36px; margin-bottom: 12px; }
+  .feature-card h3 { font-size: 18px; margin-bottom: 8px; }
+  .feature-card .fc-desc { color: var(--text2); font-size: 14px; margin-bottom: 16px; }
+  .feature-card .fc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .fc-tag {
+    background: rgba(0, 184, 148, 0.15);
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+  }
+  .fc-tag.orange { background: rgba(253, 203, 110, 0.15); color: var(--orange); }
+  .fc-tag.blue { background: rgba(116, 185, 255, 0.15); color: var(--blue); }
+  .fc-tag.purple { background: rgba(108, 92, 231, 0.15); color: var(--purple); }
+  .fc-tag.red { background: rgba(255, 107, 107, 0.15); color: var(--red); }
+  .feature-card .fc-detail {
+    display: none;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .feature-card.expanded .fc-detail { display: block; }
+  .feature-card .fc-detail .example {
+    background: #0d0f15;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 8px 0;
+    font-family: monospace;
+    font-size: 13px;
+    color: var(--accent2);
+    cursor: pointer;
+    position: relative;
+  }
+  .feature-card .fc-detail .example:hover::after {
+    content: "点击复制";
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--text2); font-size: 12px;
+  }
+  .fc-detail p { margin: 8px 0; color: var(--text2); }
+  .fc-detail strong { color: var(--text); }
+
+  /* DB Schema */
+  .db-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .db-table {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .db-table .dt-icon { font-size: 28px; margin-bottom: 8px; }
+  .db-table .dt-name { font-weight: 600; margin-bottom: 4px; }
+  .db-table .dt-count { color: var(--accent2); font-size: 24px; font-weight: 700; }
+  .db-table .dt-label { color: var(--text2); font-size: 12px; }
+
+  .examples-list { display: flex; flex-direction: column; gap: 16px; }
+  .example-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .example-item .ex-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 24px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .example-item .ex-header:hover { background: var(--card-hover); }
+  .example-item .ex-cmd {
+    background: #0d0f15;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 13px;
+    color: var(--accent2);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .example-item .ex-cmd:hover { background: var(--accent); color: #fff; }
+  .example-item .ex-desc { color: var(--text2); font-size: 14px; flex: 1; }
+  .example-item .ex-arrow { color: var(--text2); transition: transform .3s; }
+  .example-item.expanded .ex-arrow { transform: rotate(90deg); }
+  .example-item .ex-body {
+    display: none;
+    padding: 0 24px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .example-item.expanded .ex-body { display: block; padding-top: 16px; }
+  .ex-body .result-preview {
+    background: #0d0f15;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+
+  .faq-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .faq-q {
+    padding: 16px 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+    transition: background .2s;
+  }
+  .faq-q:hover { background: var(--card-hover); }
+  .faq-a {
+    display: none;
+    padding: 0 24px 16px;
+    color: var(--text2);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .faq-item.expanded .faq-a { display: block; }
+  .faq-item.expanded .faq-q .arrow { transform: rotate(90deg); }
+  .arrow { color: var(--text2); transition: transform .3s; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: rgba(15,17,23,.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 0 24px;
+  }
+  nav .nav-inner {
+    max-width: 960px; margin: 0 auto;
+    display: flex; align-items: center; height: 56px; gap: 24px;
+  }
+  nav .logo { font-weight: 700; font-size: 18px; white-space: nowrap; }
+  nav a {
+    color: var(--text2); text-decoration: none; font-size: 14px;
+    transition: color .2s;
+  }
+  nav a:hover { color: var(--text); }
+
+  footer {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--text2);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--green); color: #fff;
+    padding: 10px 24px; border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+    transition: transform .3s; z-index: 200;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── Changelog Timeline ── */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 11px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--purple));
+  }
+  .tl-entry { position: relative; margin-bottom: 32px; }
+  .tl-entry:last-child { margin-bottom: 0; }
+  .tl-dot {
+    position: absolute; left: -32px; top: 4px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid var(--bg);
+    z-index: 1;
+  }
+  .tl-entry.minor .tl-dot { width: 14px; height: 14px; left: -28px; top: 7px; background: var(--accent2); }
+  .tl-entry.initial .tl-dot { background: var(--purple); width: 26px; height: 26px; left: -34px; top: 2px; }
+  .tl-date {
+    font-size: 13px; color: var(--text2); margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tl-version {
+    background: rgba(225,112,85,.2); color: var(--accent);
+    padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;
+  }
+  .tl-entry.minor .tl-version { background: rgba(0,206,201,.15); color: var(--accent2); }
+  .tl-entry.initial .tl-version { background: rgba(108,92,231,.2); color: var(--purple); }
+  .tl-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .tl-items { color: var(--text2); font-size: 14px; line-height: 1.8; }
+  .tl-items li { margin-left: 16px; }
+  .tl-tag {
+    display: inline-block;
+    padding: 1px 8px; border-radius: 4px; font-size: 11px; margin-left: 6px;
+  }
+  .tl-tag.new { background: rgba(0,184,148,.15); color: var(--green); }
+  .tl-tag.improve { background: rgba(116,185,255,.15); color: var(--blue); }
+  .tl-tag.fix { background: rgba(255,107,107,.15); color: var(--red); }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 24px; }
+    .hero .stats { gap: 16px; }
+    .features-grid { grid-template-columns: 1fr; }
+    nav .nav-inner { gap: 12px; }
+    nav a { font-size: 12px; }
+    .quick-start { padding: 16px 20px; }
+    .db-overview { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">🏭 港泰 AI 助手</div>
+    <a href="#features">功能</a>
+    <a href="#data">数据</a>
+    <a href="#examples">示例</a>
+    <a href="#faq">FAQ</a>
+    <a href="#changelog">更新日志</a>
+  </div>
+</nav>
+
+<!-- ══ Hero ══ -->
+<div class="hero" style="padding-top:120px;">
+  <div class="container">
+    <div class="hero-emoji">🏭</div>
+    <h1>龙虾 <span>AI 工厂助手</span></h1>
+    <p class="subtitle">港泰日用塑料制品厂专属 · 飞书群直接对话 · 9年数据智能分析</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">9.5万</div><div class="stat-label">交易记录</div></div>
+      <div class="stat"><div class="stat-num">534</div><div class="stat-label">客户</div></div>
+      <div class="stat"><div class="stat-num">236</div><div class="stat-label">产品</div></div>
+      <div class="stat"><div class="stat-num">9年</div><div class="stat-label">历史数据</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-label">分析维度</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Quick Start ══ -->
+<div class="container">
+  <div class="quick-start">
+    <h3>⚡ 直接在飞书群里发消息（不需要@）：</h3>
+    <div class="cmd-row">
+      <span class="cmd" onclick="copyCmd(this)">顺利上个月买了什么？</span>
+      <span class="cmd-desc">查客户购买记录</span>
+    </div>
+    <div class="cmd-row">
+      <span class="cmd" onclick="copyCmd(this)">富贵花垃圾袋库存多少？</span>
+      <span class="cmd-desc">查产品库存</span>
+    </div>
+    <div class="cmd-row">
+      <span class="cmd" onclick="copyCmd(this)">哪些客户欠款最多？</span>
+      <span class="cmd-desc">欠款排行榜</span>
+    </div>
+    <div class="cmd-row">
+      <span class="cmd" onclick="copyCmd(this)">今天出了哪些货？</span>
+      <span class="cmd-desc">当日出库明细</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Features ══ -->
+<section id="features">
+  <div class="container">
+    <h2>🎯 核心功能</h2>
+    <p class="section-sub">点击卡片查看详情和使用示例</p>
+
+    <div class="features-grid">
+      <!-- 1. 客户查询 -->
+      <div class="feature-card" onclick="toggleCard(this)">
+        <div class="fc-icon">👥</div>
+        <h3>客户全景查询</h3>
+        <div class="fc-desc">一句话查出客户的全部信息：交易流水、欠款余额、常购产品、年度汇总</div>
+        <div class="fc-tags">
+          <span class="fc-tag">534个客户</span>
+          <span class="fc-tag">完整档案</span>
+          <span class="fc-tag">历史流水</span>
+        </div>
+        <div class="fc-detail">
+          <strong>可以问：</strong>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">顺利最近买了什么？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">吉安万家汇欠多少钱？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">索玛的联系方式是什么？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">顺旺去年的购货总额是多少？</div>
+          <p><strong>返回信息包括：</strong></p>
+          <p>📋 基本档案（联系人、电话、地址、付款方式）<br>
+          💰 欠款状态（累计购货、累计收款、余额）<br>
+          🛒 常购 TOP5 产品<br>
+          📊 年度/月度购货汇总<br>
+          📝 最近交易明细</p>
+        </div>
+      </div>
+
+      <!-- 2. 产品库存 -->
+      <div class="feature-card" onclick="toggleCard(this)">
+        <div class="fc-icon">📦</div>
+        <h3>产品与库存管理</h3>
+        <div class="fc-desc">236个产品的库存查询、销量趋势、主要买家、价格体系</div>
+        <div class="fc-tags">
+          <span class="fc-tag">236个产品</span>
+          <span class="fc-tag">库存预警</span>
+          <span class="fc-tag">销量趋势</span>
+        </div>
+        <div class="fc-detail">
+          <strong>可以问：</strong>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">富贵花垃圾袋库存多少？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">保鲜袋哪个规格卖得最好？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">有哪些产品库存不足？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">环保A系列的价格表</div>
+          <p><strong>产品品类：</strong></p>
+          <p>🔸 富贵花系列（垃圾袋）<br>
+          🔸 环保A系列<br>
+          🔸 保鲜A/B系列<br>
+          🔸 定做产品<br>
+          🔸 其他品类</p>
+          <p><strong>库存预警：</strong> 自动识别超卖（负库存）和低库存（&lt;50件）产品</p>
+        </div>
+      </div>
+
+      <!-- 3. 欠款管理 -->
+      <div class="feature-card" onclick="toggleCard(this)">
+        <div class="fc-icon">💰</div>
+        <h3>应收账款管理</h3>
+        <div class="fc-desc">533个客户欠款一目了然，欠款排行、回款效率、风险预警</div>
+        <div class="fc-tags">
+          <span class="fc-tag red">欠款排行</span>
+          <span class="fc-tag red">风险预警</span>
+          <span class="fc-tag red">回款分析</span>
+        </div>
+        <div class="fc-detail">
+          <strong>可以问：</strong>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">哪些客户欠款最多？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">欠款超过1万的客户有哪些？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">哪些客户回款率很低？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">顺利的欠款明细</div>
+          <p><strong>分析内容：</strong></p>
+          <p>📊 欠款排行榜（金额从高到低）<br>
+          📉 欠款率分析（欠款/购货比）<br>
+          🔴 风险分级：购货多但欠款比例高的客户标红<br>
+          💵 回款效率追踪</p>
+        </div>
+      </div>
+
+      <!-- 4. 报表分析 -->
+      <div class="feature-card" onclick="toggleCard(this)">
+        <div class="fc-icon">📊</div>
+        <h3>经营报表分析</h3>
+        <div class="fc-desc">月度/年度经营数据、销售排行、成本分析、淡旺季趋势</div>
+        <div class="fc-tags">
+          <span class="fc-tag orange">月度报表</span>
+          <span class="fc-tag orange">销售排行</span>
+          <span class="fc-tag orange">趋势分析</span>
+        </div>
+        <div class="fc-detail">
+          <strong>可以问：</strong>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">上个月的出货总额是多少？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">2025年哪个月业绩最好？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">最近三个月的客户排行</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">今年和去年同期对比怎么样？</div>
+          <p><strong>报表类型：</strong></p>
+          <p>📈 月度出入库金额汇总<br>
+          🏆 客户销售额排行（TOP 10/20）<br>
+          🏆 产品销售额排行<br>
+          📅 日出库明细（按客户分组）<br>
+          🌡️ 淡旺季分析（各月日均出货额）<br>
+          📊 整体经营摘要</p>
+        </div>
+      </div>
+
+      <!-- 5. 运营洞察 -->
+      <div class="feature-card" onclick="toggleCard(this)">
+        <div class="fc-icon">🔍</div>
+        <h3>运营洞察分析</h3>
+        <div class="fc-desc">客户流失预警、新客户增长、定价异常检查、毛利估算等7大维度</div>
+        <div class="fc-tags">
+          <span class="fc-tag purple">流失预警</span>
+          <span class="fc-tag purple">毛利估算</span>
+          <span class="fc-tag purple">7维分析</span>
+        </div>
+        <div class="fc-detail">
+          <strong>可以问：</strong>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">最近有哪些老客户不来了？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">今年新增了多少客户？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">有没有定价不合理的产品？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">整体毛利率大概多少？</div>
+          <p><strong>7大分析维度：</strong></p>
+          <p>⚠️ 客户流失预警 — 上半年活跃、近期消失的客户<br>
+          📈 新客户增长 — 按月统计首次购买的客户<br>
+          💲 定价异常检查 — 同产品不同客户的价差<br>
+          🔄 下单频率 — TOP客户平均多少天下一单<br>
+          💵 毛利估算 — 销售额 vs 成本，毛利率<br>
+          🌡️ 淡旺季 — 各月出货量热力图<br>
+          💰 回款效率 — 购货多但欠款高的风险客户</p>
+        </div>
+      </div>
+
+      <!-- 6. 成本支出 -->
+      <div class="feature-card" onclick="toggleCard(this)">
+        <div class="fc-icon">🧾</div>
+        <h3>成本与支出管理</h3>
+        <div class="fc-desc">原材料、水电、工资、机械、税款等6大类支出追踪</div>
+        <div class="fc-tags">
+          <span class="fc-tag">原材料</span>
+          <span class="fc-tag">水电</span>
+          <span class="fc-tag">工资</span>
+          <span class="fc-tag">设备</span>
+        </div>
+        <div class="fc-detail">
+          <strong>可以问：</strong>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">上个月原材料花了多少？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">今年的水电费汇总</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">机械设备维修花了多少？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">各项支出的占比是多少？</div>
+          <p><strong>支出分类：</strong></p>
+          <p>🔹 原材料入库 — 原料采购成本<br>
+          🔹 水电费 — 按品名汇总<br>
+          🔹 工资/社保 — 员工薪酬<br>
+          🔹 机械设备 — 采购/维修<br>
+          🔹 税款 — 各税种<br>
+          🔹 客户返利 — 按客户汇总</p>
+        </div>
+      </div>
+
+      <!-- 7. 计件工资 -->
+      <div class="feature-card" onclick="toggleCard(this)">
+        <div class="fc-icon">👷</div>
+        <h3>计件工资管理</h3>
+        <div class="fc-desc">9万条计件记录，27名员工，6道工序，工资自动核算</div>
+        <div class="fc-tags">
+          <span class="fc-tag blue">9万记录</span>
+          <span class="fc-tag blue">6道工序</span>
+          <span class="fc-tag blue">27名员工</span>
+        </div>
+        <div class="fc-detail">
+          <strong>可以问：</strong>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">分切组这个月的计件工资</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">张三上个月做了多少？</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">各工序的工价表</div>
+          <div class="example" onclick="event.stopPropagation();copyCmd(this)">打包组谁做的最多？</div>
+          <p><strong>工序分类：</strong></p>
+          <p>✂️ 分切组<br>
+          📦 打包组<br>
+          🎬 折膜组<br>
+          🔄 摇膜组<br>
+          ✂️📦 分切包装组（合并工序）<br>
+          🔪 单切</p>
+          <p>每道工序都有独立的计件工价，193个工价标准</p>
+        </div>
+      </div>
+
+      <!-- 8. 图片/文件 -->
+      <div class="feature-card" onclick="toggleCard(this)">
+        <div class="fc-icon">📸</div>
+        <h3>图片与文件处理</h3>
+        <div class="fc-desc">发图片或文件到群里，AI 自动识别内容并处理</div>
+        <div class="fc-tags">
+          <span class="fc-tag">图片识别</span>
+          <span class="fc-tag">文件处理</span>
+          <span class="fc-tag">Excel生成</span>
+        </div>
+        <div class="fc-detail">
+          <p><strong>图片处理：</strong></p>
+          <p>📸 发送手写单据照片 → AI 自动识别内容<br>
+          📊 发送报表截图 → AI 读取数据并分析<br>
+          🏷️ 发送产品标签 → AI 提取产品信息</p>
+          <p><strong>文件处理：</strong></p>
+          <p>📄 PDF / Word — 读取文字内容<br>
+          📊 Excel — 读取表格数据，支持分析和汇总<br>
+          📎 任何文件 — 自动下载并按格式处理</p>
+          <p><strong>Excel 生成：</strong></p>
+          <p>需要导出数据时，AI 会自动生成 Excel 文件并发送到群里</p>
+        </div>
+      </div>
+
+      <!-- 9. 进度反馈 -->
+      <div class="feature-card" onclick="toggleCard(this)">
+        <div class="fc-icon">⚡</div>
+        <h3>实时进度反馈</h3>
+        <div class="fc-desc">每次处理任务，群里实时显示进度卡片，全过程透明可见</div>
+        <div class="fc-tags">
+          <span class="fc-tag">实时更新</span>
+          <span class="fc-tag">步骤可视化</span>
+        </div>
+        <div class="fc-detail">
+          <p>🔄 每执行一步就实时更新卡片<br>
+          💭 显示 AI 的思考过程<br>
+          📜 历史步骤可折叠查看<br>
+          ⏱️ 每步显示耗时<br>
+          ✅ 完成后卡片变绿色<br>
+          ⚠️ 出错时卡片变橙色</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Data Overview ══ -->
+<section id="data" style="background: var(--card);">
+  <div class="container">
+    <h2>📂 数据总览</h2>
+    <p class="section-sub">港泰9年经营数据，全部可通过自然语言查询</p>
+
+    <div class="db-overview">
+      <div class="db-table">
+        <div class="dt-icon">📋</div>
+        <div class="dt-name">交易记录</div>
+        <div class="dt-count">95,508</div>
+        <div class="dt-label">条（2017-2026）</div>
+      </div>
+      <div class="db-table">
+        <div class="dt-icon">👥</div>
+        <div class="dt-name">客户</div>
+        <div class="dt-count">534</div>
+        <div class="dt-label">个客户档案</div>
+      </div>
+      <div class="db-table">
+        <div class="dt-icon">📦</div>
+        <div class="dt-name">产品</div>
+        <div class="dt-count">236</div>
+        <div class="dt-label">个产品SKU</div>
+      </div>
+      <div class="db-table">
+        <div class="dt-icon">💰</div>
+        <div class="dt-name">应收账款</div>
+        <div class="dt-count">533</div>
+        <div class="dt-label">个欠款客户</div>
+      </div>
+      <div class="db-table">
+        <div class="dt-icon">👷</div>
+        <div class="dt-name">计件记录</div>
+        <div class="dt-count">91,189</div>
+        <div class="dt-label">条工资记录</div>
+      </div>
+      <div class="db-table">
+        <div class="dt-icon">💬</div>
+        <div class="dt-name">微信记录</div>
+        <div class="dt-count">4,434</div>
+        <div class="dt-label">条聊天记录</div>
+      </div>
+    </div>
+
+    <p style="text-align:center; color:var(--text2); margin-top:20px;">
+      交易类型覆盖：销售出库、成品入库、原材料入库、工资/水电/机械/耗材等全部入库类型<br>
+      微信记录覆盖：12个客户群 + 3个供应商群 + 5个内部群 + 1个物流群
+    </p>
+  </div>
+</section>
+
+<!-- ══ Examples ══ -->
+<section id="examples">
+  <div class="container">
+    <h2>💬 使用示例</h2>
+    <p class="section-sub">直接在飞书群里发消息，不需要@机器人</p>
+
+    <div class="examples-list">
+      <div class="example-item" onclick="toggleExample(this)">
+        <div class="ex-header">
+          <span class="ex-cmd" onclick="event.stopPropagation();copyCmd(this)">顺利上个月买了什么？</span>
+          <span class="ex-desc">客户购买记录查询</span>
+          <span class="ex-arrow arrow">▶</span>
+        </div>
+        <div class="ex-body">
+          <div class="result-preview">📋 客户「顺利」2月交易明细
+
+销售出库 5 笔：
+  2/03  富贵花50*55(20只)   50箱  ¥1,250
+  2/08  保鲜袋A 25*35       80箱  ¥1,680
+  2/15  环保A 60*80(30只)   30箱  ¥900
+  2/22  富贵花65*80(20只)   40箱  ¥1,400
+  2/28  保鲜袋B 30*40       60箱  ¥1,440
+
+💰 本月合计: ¥6,670
+📊 常购TOP3: 富贵花系列、保鲜袋A、环保A
+💳 当前欠款: ¥12,350</div>
+        </div>
+      </div>
+
+      <div class="example-item" onclick="toggleExample(this)">
+        <div class="ex-header">
+          <span class="ex-cmd" onclick="event.stopPropagation();copyCmd(this)">哪些客户欠款最多？</span>
+          <span class="ex-desc">应收账款排行</span>
+          <span class="ex-arrow arrow">▶</span>
+        </div>
+        <div class="ex-body">
+          <div class="result-preview">💰 客户欠款排行 TOP 10
+
+🥇 XX商贸    ¥85,200  (累计购货¥320,000  欠款率27%)
+🥈 YY百货    ¥62,100  (累计购货¥280,000  欠款率22%)
+🥉 ZZ超市    ¥45,800  (累计购货¥150,000  欠款率31%) ⚠️
+4. ...
+...
+10. ...
+
+⚠️ 风险提示：ZZ超市欠款率31%偏高（购货¥15万欠¥4.58万）
+📊 全部欠款客户共 533 家，总应收 ¥XXX万</div>
+        </div>
+      </div>
+
+      <div class="example-item" onclick="toggleExample(this)">
+        <div class="ex-header">
+          <span class="ex-cmd" onclick="event.stopPropagation();copyCmd(this)">上个月业绩怎么样？</span>
+          <span class="ex-desc">月度经营报表</span>
+          <span class="ex-arrow arrow">▶</span>
+        </div>
+        <div class="ex-body">
+          <div class="result-preview">📊 2026年2月经营月报
+
+💰 销售出库总额: ¥XXX,XXX
+📦 出库笔数: XXX 笔
+👥 活跃客户: XX 家
+📈 环比上月: +X.X%
+
+🏆 客户排行 TOP 5:
+  1. XXX    ¥XX,XXX
+  2. ...
+
+🏆 产品排行 TOP 5:
+  1. 富贵花50*55   XXX箱  ¥XX,XXX
+  2. ...
+
+📊 成本支出:
+  原材料: ¥XX,XXX
+  水电费: ¥X,XXX
+  工资: ¥XX,XXX</div>
+        </div>
+      </div>
+
+      <div class="example-item" onclick="toggleExample(this)">
+        <div class="ex-header">
+          <span class="ex-cmd" onclick="event.stopPropagation();copyCmd(this)">分切组这个月工资多少？</span>
+          <span class="ex-desc">计件工资查询</span>
+          <span class="ex-arrow arrow">▶</span>
+        </div>
+        <div class="ex-body">
+          <div class="result-preview">👷 分切组 3月计件工资
+
+员工      件数    工资
+张三      2,580   ¥3,870
+李四      2,340   ¥3,510
+王五      1,980   ¥2,970
+...
+
+📊 全组合计: XX,XXX 件  ¥XX,XXX
+📈 人均: ¥X,XXX
+🔝 最高: 张三 (¥3,870)</div>
+        </div>
+      </div>
+
+      <div class="example-item" onclick="toggleExample(this)">
+        <div class="ex-header">
+          <span class="ex-cmd" onclick="event.stopPropagation();copyCmd(this)">最近有哪些老客户不来了？</span>
+          <span class="ex-desc">客户流失预警</span>
+          <span class="ex-arrow arrow">▶</span>
+        </div>
+        <div class="ex-body">
+          <div class="result-preview">⚠️ 客户流失预警
+
+以下客户在上半年有购货，但近3个月未下单：
+
+客户          上半年购货额    最后购货日
+XX商贸        ¥45,200       2025-09-15
+YY日用品      ¥32,100       2025-10-08
+ZZ批发        ¥28,600       2025-08-22
+...
+
+💡 建议：可主动联系了解原因，挽回流失客户</div>
+        </div>
+      </div>
+
+      <div class="example-item" onclick="toggleExample(this)">
+        <div class="ex-header">
+          <span class="ex-cmd" onclick="event.stopPropagation();copyCmd(this)">（发图片）这张单据帮我录入</span>
+          <span class="ex-desc">图片识别 — 手写单据</span>
+          <span class="ex-arrow arrow">▶</span>
+        </div>
+        <div class="ex-body">
+          <div class="result-preview">使用方式：
+1. 先在群里发送手写单据的照片
+2. 然后发消息说"帮我看看这张单" 或 "这是什么订单"
+
+AI 能识别：
+📝 手写送货单 → 提取客户、产品、数量、金额
+📊 报表截图 → 读取数据进行分析
+🏷️ 产品标签 → 提取产品信息
+📎 Excel/PDF 文件 → 读取并分析内容</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══ -->
+<section id="faq" style="background: var(--card);">
+  <div class="container">
+    <h2>❓ 常见问题</h2>
+    <p class="section-sub"></p>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">需要@龙虾吗？<span class="arrow">▶</span></div>
+      <div class="faq-a"><strong>不需要！</strong>港泰群设置为直接响应模式，在群里发任何消息都会被处理。不需要@机器人，直接说你想查什么就行。</div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">数据来源是什么？<span class="arrow">▶</span></div>
+      <div class="faq-a">所有数据来自工厂的 <strong>学习2025.xls</strong> 账本文件，覆盖 2017年3月至2026年3月的完整经营数据。包括：出入库交易明细 9.5万条、客户档案 534个、产品 236个、计件工资 9.1万条。数据每次更新账本后可重新导入。</div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">可以导出 Excel 吗？<span class="arrow">▶</span></div>
+      <div class="faq-a">可以！你说"帮我导出XX的数据到Excel"，AI 会自动生成 Excel 文件并发送到群里。支持任何查询结果的导出。</div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">龙虾在处理别人的问题时怎么办？<span class="arrow">▶</span></div>
+      <div class="faq-a">你的消息会自动加入队列。龙虾处理完当前任务后会按顺序处理你的请求，你会看到"📋 已加入队列"的提示。</div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">怎么取消正在进行的任务？<span class="arrow">▶</span></div>
+      <div class="faq-a">直接在群里发 <strong>"取消"</strong> 或 <strong>"停止"</strong> 即可中止当前任务。英文 "cancel" / "stop" 也可以。</div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">数据安全吗？会泄露给其他群吗？<span class="arrow">▶</span></div>
+      <div class="faq-a">完全隔离。港泰群的数据<strong>只有港泰群能查询</strong>，其他群（猫砂厂、学习群、股票群）无法访问港泰的任何数据。每条消息都有数据隔离指令保护。</div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">可以分析微信聊天记录吗？<span class="arrow">▶</span></div>
+      <div class="faq-a">可以。系统已导入了 4,434 条微信聊天记录，覆盖 12个客户群、3个供应商群、5个内部群和1个物流群。你可以问"顺利群最近聊了什么？"或"客户群里有没有人催货？"</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Changelog ══ -->
+<section id="changelog">
+  <div class="container">
+    <h2>📝 更新日志</h2>
+    <p class="section-sub">港泰 AI 助手版本演进记录</p>
+
+    <div class="timeline">
+      <!-- v1.2.1 -->
+      <div class="tl-entry minor">
+        <div class="tl-dot"></div>
+        <div class="tl-date">2026-03-14 <span class="tl-version">v1.2.1</span></div>
+        <div class="tl-title">队列系统加固</div>
+        <ul class="tl-items">
+          <li>原子写入 <span class="tl-tag fix">修复</span></li>
+          <li>inbox清空修复 <span class="tl-tag fix">修复</span></li>
+          <li>进度卡片优化 <span class="tl-tag improve">优化</span></li>
+        </ul>
+      </div>
+
+      <!-- v1.2 -->
+      <div class="tl-entry">
+        <div class="tl-dot"></div>
+        <div class="tl-date">2026-03-13 <span class="tl-version">v1.2</span></div>
+        <div class="tl-title">功能指南上线</div>
+        <ul class="tl-items">
+          <li>GitHub Pages部署 <span class="tl-tag new">新功能</span></li>
+          <li>飞书深度集成增强 <span class="tl-tag improve">优化</span></li>
+        </ul>
+      </div>
+
+      <!-- v1.1.1 -->
+      <div class="tl-entry minor">
+        <div class="tl-dot"></div>
+        <div class="tl-date">2026-03-12 <span class="tl-version">v1.1.1</span></div>
+        <div class="tl-title">Per-User记忆系统</div>
+        <ul class="tl-items">
+          <li>每个群成员独立记忆档案 <span class="tl-tag new">新功能</span></li>
+        </ul>
+      </div>
+
+      <!-- v1.1 -->
+      <div class="tl-entry">
+        <div class="tl-dot"></div>
+        <div class="tl-date">2026-03-11 <span class="tl-version">v1.1</span></div>
+        <div class="tl-title">PDF/Word文档处理</div>
+        <ul class="tl-items">
+          <li>PDF文字替换 <span class="tl-tag new">新功能</span></li>
+          <li>Word模板填写 <span class="tl-tag new">新功能</span></li>
+        </ul>
+      </div>
+
+      <!-- v1.0.1 -->
+      <div class="tl-entry minor">
+        <div class="tl-dot"></div>
+        <div class="tl-date">2026-03-10 <span class="tl-version">v1.0.1</span></div>
+        <div class="tl-title">微信聊天集成</div>
+        <ul class="tl-items">
+          <li>提取/总结/发送微信消息 <span class="tl-tag new">新功能</span></li>
+          <li>图片解密 <span class="tl-tag new">新功能</span></li>
+        </ul>
+      </div>
+
+      <!-- v1.0 -->
+      <div class="tl-entry initial">
+        <div class="tl-dot"></div>
+        <div class="tl-date">2026-03-09 <span class="tl-version">v1.0</span></div>
+        <div class="tl-title">🎉 工厂助手上线</div>
+        <ul class="tl-items">
+          <li>飞书群触发 <span class="tl-tag new">新功能</span></li>
+          <li>AI问答 <span class="tl-tag new">新功能</span></li>
+          <li>实时进度卡片 <span class="tl-tag new">新功能</span></li>
+          <li>多工厂数据隔离 <span class="tl-tag new">新功能</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>🏭 龙虾 AI 工厂助手 — 港泰日用塑料制品厂专属</p>
+    <p style="margin-top:8px;">在飞书群直接发消息即可使用所有功能</p>
+    <p style="margin-top:4px; font-size:12px; color:#555;">Powered by Claude Opus · 数据覆盖 2017-2026</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast">✅ 已复制到剪贴板</div>
+
+<script>
+function copyCmd(el) {
+  const text = el.textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById('toast');
+    toast.textContent = '✅ 已复制: ' + text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1500);
+  });
+}
+function toggleCard(el) { el.classList.toggle('expanded'); }
+function toggleExample(el) { el.classList.toggle('expanded'); }
+function toggleFaq(el) { el.classList.toggle('expanded'); }
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
